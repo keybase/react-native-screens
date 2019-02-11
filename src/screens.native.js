@@ -134,10 +134,26 @@ export class PeekAndPop extends React.Component {
   onActionsEvent = ({ nativeEvent: { key } }) => {
     this.state.mappedActions[key]();
   };
+
+  onPeek = () => {
+    console.warn(this.previewView.current.componentDidPeek);
+    this.previewView.current &&
+      this.previewView.current.componentDidPeek &&
+      this.previewView.current.componentDidPeek();
+    this.props.onPeek && this.props.onPeek();
+  };
+
+  previewView = React.createRef();
+
   render() {
-    const { style, renderPreview, onPop, children } = this.props;
+    const {
+      style,
+      previewComponent: PreviewComponent,
+      onPop,
+      children,
+      previewProps,
+    } = this.props;
     const { traversedActions } = this.state;
-    console.log(this.traversedActions);
     return (
       <ScreenContainer style={style}>
         <Screen
@@ -145,11 +161,12 @@ export class PeekAndPop extends React.Component {
           onAction={this.onActionsEvent}
           previewActions={traversedActions}
           onPop={onPop}
+          onPeek={this.onPeek}
           ref={this.peekable}>
           {children}
         </Screen>
         <Screen style={StyleSheet.absoluteFillObject} ref={this.preview}>
-          {renderPreview()}
+          <PreviewComponent ref={this.previewView} {...previewProps} />
         </Screen>
       </ScreenContainer>
     );

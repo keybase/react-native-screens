@@ -11,6 +11,7 @@
 - (void)setPreview:(UIView*)preview;
 - (void)setActions:(NSArray *)actions;
 @property (nonatomic, copy) RCTDirectEventBlock onPop;
+@property (nonatomic, copy) RCTDirectEventBlock onPeek;
 @property (nonatomic, copy) RCTDirectEventBlock onAction;
 
 @end
@@ -93,6 +94,11 @@
 - (void)setOnPop:(RCTDirectEventBlock)onPop
 {
   [_controller setOnPop:onPop];
+}
+
+- (void)setOnPeek:(RCTDirectEventBlock)onPeek
+{
+  [_controller setOnPeek:onPeek];
 }
 
 - (void)setOnAction:(RCTDirectEventBlock)onAction
@@ -208,6 +214,9 @@
 
 - (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location
 {
+  if (_onPeek) {
+    _onPeek(@{});
+  }
   UIViewController *controller = [[RNPreviewViewController alloc] initWithPreviewingActions:_actionsForPreviewing];
   [controller.view addSubview:_preview];
   return  controller;
@@ -224,20 +233,20 @@
 @end
 
 
-
 @implementation RNSScreenManager
 
 
 RCT_EXPORT_MODULE()
+
 RCT_EXPORT_VIEW_PROPERTY(active, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(previewView, NSInteger)
 RCT_EXPORT_VIEW_PROPERTY(previewActions, NSArray)
 RCT_EXPORT_VIEW_PROPERTY(onPop, RCTDirectEventBlock);
+RCT_EXPORT_VIEW_PROPERTY(onPeek, RCTDirectEventBlock);
 RCT_EXPORT_VIEW_PROPERTY(onAction, RCTDirectEventBlock);
 
 - (UIView *)view
 {
-  
   return [[RNSScreenView alloc] initWithUIManager:self.bridge.uiManager];
 }
 

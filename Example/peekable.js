@@ -2,6 +2,23 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { PeekAndPop } from 'react-native-screens';
 
+class InnerComponent extends React.Component {
+  componentDidMount() {
+    console.warn('mount');
+  }
+  componentDidPeek = () => {
+    console.warn('XX');
+  };
+  render() {
+    console.warn('render');
+    return (
+      <View style={styles.container}>
+        <Text>INNER</Text>
+      </View>
+    );
+  }
+}
+
 class App extends Component {
   render() {
     return (
@@ -35,7 +52,8 @@ class App extends Component {
             },
           ]}
           onPop={() => console.warn('CX')}
-          renderPreview={() => <Text>Inner</Text>}>
+          previewComponent={InnerComponent}
+          previewProps={{}}>
           <View
             style={{
               width: 300,
