@@ -1,6 +1,6 @@
 #import "RNSScreen.h"
 #import "RNSScreenContainer.h"
-#import <RCTText/RCTBaseTextInputView.h>
+#import <RCTBaseTextInputView.h>
 
 @interface RNSScreen : UIViewController
 
