@@ -48,7 +48,9 @@
     if (!active) {
       [RNSScreenView walkThroughSubviewsAndBlurTextInputs:self];
     }
-    [_reactSuperview markChildUpdated];
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+          [self->_reactSuperview markChildUpdated];
+      });
   }
 }
 
