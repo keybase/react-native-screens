@@ -48,9 +48,8 @@
     if (!active) {
       [RNSScreenView walkThroughSubviewsAndBlurTextInputs:self];
     }
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-          [self->_reactSuperview markChildUpdated];
-      });
+      
+      [self.reactSuperview markChildUpdated];
   }
 }
 
@@ -117,7 +116,7 @@
 
 - (void)notifyFinishTransitioning
 {
-  [_previousFirstResponder becomeFirstResponder];
+  //[_previousFirstResponder becomeFirstResponder];
   _previousFirstResponder = nil;
 }
 
