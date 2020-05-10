@@ -1,5 +1,6 @@
 #import "RNSScreen.h"
 #import "RNSScreenContainer.h"
+#import "RCTBaseTextInputView.h"
 
 @interface RNSScreen : UIViewController
 
@@ -23,11 +24,32 @@
   return self;
 }
 
++ (void)walkThroughSubviewsAndBlurTextInputs:(UIView *) view
+// This is a workaroud for an issue of preserving focus on mounting
+// and unmounting TextInput. In screen was set to inactive with focused
+// text input inside, textInput was still focused on reactivation of a screen.
+// It was invconsistent behavior with react-navigation without RNS.
+// What's more, then TextInput's focus couldn't be managed with
+// imperative API neither for bluring nor dismissing keyboard.
+{
+  if ([view isKindOfClass:[RCTBaseTextInputView class]]) {
+    [(RCTBaseTextInputView *)view reactBlur];
+  } else {
+    for (view in view.subviews) {
+      [RNSScreenView walkThroughSubviewsAndBlurTextInputs:view];
+    }
+  }
+}
+
 - (void)setActive:(BOOL)active
 {
   if (active != _active) {
     _active = active;
-    [_reactSuperview markChildUpdated];
+    if (!active) {
+      [RNSScreenView walkThroughSubviewsAndBlurTextInputs:self];
+    }
+      
+      [self.reactSuperview markChildUpdated];
   }
 }
 
@@ -94,7 +116,7 @@
 
 - (void)notifyFinishTransitioning
 {
-  [_previousFirstResponder becomeFirstResponder];
+  //[_previousFirstResponder becomeFirstResponder];
   _previousFirstResponder = nil;
 }
 
